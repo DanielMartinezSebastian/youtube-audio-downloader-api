@@ -1,8 +1,8 @@
 /**
  * Manejador para descargar un archivo.
- * @param {Object} req - Objeto de solicitud HTTP.
- * @param {Object} res - Objeto de respuesta HTTP.
- * @returns {Promise<void>} - Promesa que se resuelve cuando se completa la descarga del archivo.
+ * @param {Object} req
+ * @param {Object} res
+ * @returns {Promise<void>}
  */
 import downloadFile from "../../services/fileDownloader.js";
 
