@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 
 // Rutas relacionadas con los audios
-app.use("/audios", audioRoutes);
+app.use("/audio", audioRoutes);
 app.use("/download", fileRoutes);
 
 export default app;

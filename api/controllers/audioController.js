@@ -1,14 +1,13 @@
-// api/controllers/audioController.js
-import downloadAudio from "../../services/audioDownloader.js";
+import convertAudio from "../../services/audioConverter.js";
 
-async function downloadAudioHandler(req, res) {
+async function convertAudioHandler(req, res) {
   const { url } = req.body;
   try {
-    await downloadAudio(url, res);
+    await convertAudio(url, res);
   } catch (err) {
-    console.error("Error al descargar audio:", err);
-    res.status(500).json({ error: "Error al descargar audio." });
+    console.error("Error al convertir audio:", err);
+    res.status(500).json({ error: "Error al convertir audio." });
   }
 }
 
-export { downloadAudioHandler };
+export { convertAudioHandler };

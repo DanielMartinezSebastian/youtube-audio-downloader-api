@@ -5,7 +5,7 @@ import path from "path";
 import https from "https";
 import { exec } from "child_process";
 
-async function downloadAudio(url, res, outputFileName = null) {
+async function convertAudio(url, res, outputFileName = null) {
   try {
     const info = await youtubedl(url, {
       dumpSingleJson: true,
@@ -25,6 +25,7 @@ async function downloadAudio(url, res, outputFileName = null) {
     const title = removeEmojis(info.title);
 
     // Definir la ruta de la carpeta "cache"
+    const serverUrl = process.env.SERVER_URL || "http://localhost:3000";
     const cacheFolder = path.join(process.cwd(), "cache");
 
     // Crear la carpeta "cache" si no existe
@@ -81,7 +82,10 @@ async function downloadAudio(url, res, outputFileName = null) {
             const fileName = path.basename(mp3FilePath);
 
             // Envía el nombre del archivo MP3 al cliente como parte de la respuesta
-            res.json({ fileName: fileName });
+            res.json({
+              fileName: fileName,
+              url: `${serverUrl}/download/${fileName}`,
+            });
           }
         );
       });
@@ -92,4 +96,4 @@ async function downloadAudio(url, res, outputFileName = null) {
   }
 }
 
-export default downloadAudio;
+export default convertAudio;
