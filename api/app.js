@@ -1,4 +1,7 @@
-// api/app.js
+/**
+ * Express app for the YouTube Audio Downloader API.
+ * @module app
+ */
 import express from "express";
 import audioRoutes from "./routes/audioRoutes.js";
 import fileRoutes from "./routes/fileRoutes.js";

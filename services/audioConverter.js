@@ -1,4 +1,11 @@
-// services/audioDownloader.js
+/**
+ * Convierte el audio de un video de YouTube a formato MP3.
+ * @param {string} url
+ * @param {object} res
+ * @param {string} [outputFileName]
+ * @returns {Promise<void>}
+ * @throws {Error}
+ */
 import youtubedl from "youtube-dl-exec";
 import fs from "fs";
 import path from "path";

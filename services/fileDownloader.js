@@ -1,3 +1,9 @@
+/**
+ * Manejador para descargar un archivo.
+ * @param {Object} req
+ * @param {Object} res
+ * @returns {Promise<void>}
+ */
 import path from "path";
 import fs from "fs";
 

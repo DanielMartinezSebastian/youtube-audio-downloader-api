@@ -1,3 +1,7 @@
+/**
+ * Ruta para descargar archivos.
+ * @module routes/fileRoutes
+ */
 import express from "express";
 import { downloadFileHandler } from "../controllers/fileController.js";
 
