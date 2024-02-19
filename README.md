@@ -4,7 +4,9 @@ Este proyecto proporciona una API para extraer audio de videos de YouTube, conve
 
 ## Instalación
 
-Para ejecutar esta API localmente, necesitarás tener instalado Node.js en tu sistema. Sigue estos pasos para configurar el proyecto:
+Para ejecutar esta API localmente, necesitarás tener instalado Node.js en tu sistema. Además, asegúrate de tener la herramienta FFmpeg instalada en tu sistema. Puedes descargarla desde [ffmpeg.org/download.html](https://ffmpeg.org/download.html).
+
+Sigue estos pasos para configurar el proyecto:
 
 1. **Clona el repositorio:**
    ```
