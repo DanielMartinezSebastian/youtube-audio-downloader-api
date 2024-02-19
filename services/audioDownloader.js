@@ -1,10 +1,11 @@
 // services/audioDownloader.js
 import youtubedl from "youtube-dl-exec";
 import fs from "fs";
+import path from "path";
 import https from "https";
 import { exec } from "child_process";
 
-async function downloadAudio(url) {
+async function downloadAudio(url, res, outputFileName = null) {
   try {
     const info = await youtubedl(url, {
       dumpSingleJson: true,
@@ -23,21 +24,33 @@ async function downloadAudio(url) {
     }
     const title = removeEmojis(info.title);
 
-    const webaFileName = `${title
-      .replace(/[\\/:*?"<>|,.]/g, "")
-      .replace(/\s+/g, "-")}.weba`;
-    const mp3FileName = `${title
-      .replace(/[\\/:*?"<>|,.]/g, "")
-      .replace(/\s+/g, "-")}.mp3`;
+    // Definir la ruta de la carpeta "cache"
+    const cacheFolder = path.join(process.cwd(), "cache");
+
+    // Crear la carpeta "cache" si no existe
+    if (!fs.existsSync(cacheFolder)) {
+      fs.mkdirSync(cacheFolder, { recursive: true });
+    }
+
+    // Definir las rutas de los archivos weba y mp3 dentro de la carpeta "cache"
+    const webaFilePath = path.join(
+      cacheFolder,
+      `${title.replace(/[\\/:*?"<>|,.]/g, "").replace(/\s+/g, "-")}.weba`
+    );
+    const mp3FilePath = path.join(
+      cacheFolder,
+      outputFileName ||
+        `${title.replace(/[\\/:*?"<>|,.]/g, "").replace(/\s+/g, "-")}.mp3`
+    );
 
     // Obtener la URL del archivo de audio
     const audioUrl = info.requested_formats[1].url;
 
-    console.log(`Descargando ♦ ${webaFileName}`);
+    console.log(`Descargando ♦ ${webaFilePath}`);
     // Descargar el archivo usando https.get
     https.get(audioUrl, (response) => {
       // Crear un flujo de escritura para guardar el archivo weba
-      const webaWriter = fs.createWriteStream(webaFileName);
+      const webaWriter = fs.createWriteStream(webaFilePath);
 
       // Manejar eventos de error en el flujo de escritura
       webaWriter.on("error", (err) => {
@@ -49,20 +62,26 @@ async function downloadAudio(url) {
 
       // Manejar eventos de finalización del flujo de escritura
       webaWriter.on("finish", () => {
-        console.log(`Descarga completa: ${webaFileName}`);
+        console.log(`Descarga completa: ${webaFilePath}`);
         // Convertir archivo weba a mp3 usando ffmpeg
-        console.log(`Convirtiendo a MP3: ${mp3FileName}`);
+        console.log(`Convirtiendo a MP3: ${mp3FilePath}`);
         exec(
-          `ffmpeg -i "${webaFileName}" "${mp3FileName}"`,
+          `ffmpeg -i "${webaFilePath}" "${mp3FilePath}"`,
           (err, stdout, stderr) => {
             if (err) {
               console.error("Error al convertir a MP3:", err);
               console.log("Continuando con la siguiente descarga...");
               return;
             }
-            console.log(`Conversión completa: ${mp3FileName}`);
+            console.log(`Conversión completa: ${mp3FilePath}`);
             // Eliminar el archivo weba después de la conversión a mp3
-            fs.unlinkSync(webaFileName);
+            fs.unlinkSync(webaFilePath);
+
+            // Obtener el nombre del archivo MP3 generado
+            const fileName = path.basename(mp3FilePath);
+
+            // Envía el nombre del archivo MP3 al cliente como parte de la respuesta
+            res.json({ fileName: fileName });
           }
         );
       });
